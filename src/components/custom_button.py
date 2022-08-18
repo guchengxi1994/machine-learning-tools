@@ -1,6 +1,6 @@
-from PySide6.QtWidgets import QToolButton
 from PySide6 import QtCore
 from PySide6.QtGui import QIcon
+from PySide6.QtWidgets import QToolButton
 
 
 class CustomButton(QToolButton):
@@ -13,4 +13,3 @@ class CustomButton(QToolButton):
         self.setFixedHeight(70)
         self.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
         self.setStyleSheet("padding-top: 20px;")
-        

@@ -2,16 +2,20 @@ import sys
 
 sys.path.append("..")
 
-from PySide6.QtWidgets import (
-    QMainWindow,
-    QVBoxLayout,
-    QHBoxLayout,
-    QWidget, QFileDialog
-)
-from PySide6.QtGui import QIcon, QAction
-from PySide6 import QtCore
-
+from typing import List
 from components.custom_button import CustomButton
+from components.file_management_widget import FileManagementWidget
+from models import *
+from PySide6 import QtCore
+from PySide6.QtGui import QAction, QIcon
+from PySide6.QtWidgets import (
+    QFileDialog,
+    QHBoxLayout,
+    QMainWindow,
+    QStackedLayout,
+    QVBoxLayout,
+    QWidget,
+)
 
 
 class MainScreen(QMainWindow):
@@ -19,6 +23,12 @@ class MainScreen(QMainWindow):
         self,
     ) -> None:
         super().__init__()
+        ## 读取结构
+        self.__loading_folder()
+        ## 记录访问过的Folder
+        self.folderList: List[Folder] = []
+        self.folderList.append(self.folder)
+
         self.setWindowTitle("Machine learning tools")
         self.setWindowIcon(QIcon("assets/icon2.png"))
         self.setMinimumWidth(800)
@@ -29,28 +39,49 @@ class MainScreen(QMainWindow):
         self.__build_menubar()
         self.__build_left_side_toolbar()
 
-        layout.addLayout(self.leftSideToolbar)
+        stackLayout = QStackedLayout()
+        self.fileManagementWidget = FileManagementWidget(self)
+        stackLayout.addWidget(self.fileManagementWidget)
 
-        layout.setAlignment(QtCore.Qt.AlignLeft)
+        layout.addLayout(self.leftSideToolbar)
+        layout.addLayout(stackLayout)
+        layout.setAlignment(QtCore.Qt.AlignTop)
 
         ## 窗口主体
-        mainWidget = QWidget(self)
+        mainWidget = QWidget()
         mainWidget.setLayout(layout)
         self.setCentralWidget(mainWidget)
 
+    def __loading_folder(self):
+        self.folder = load_structure_file("")
+
     def __build_left_side_toolbar(self):
         self.leftSideToolbar = QVBoxLayout()
-        self.openFileButton = CustomButton("Open file", "assets/file.png")
+        self.openFileButton = CustomButton("Add File", "assets/add_file.png")
         self.openFileButton.clicked.connect(self.__open_file_func)
+
+        self.backButton = CustomButton("Back", "assets/back.png")
+        self.backButton.clicked.connect(self.__prev_func)
+
         self.leftSideToolbar.addWidget(self.openFileButton)
+        self.leftSideToolbar.addWidget(self.backButton)
         self.leftSideToolbar.setAlignment(QtCore.Qt.AlignTop)
+
+    def __prev_func(self):
+        if len(self.folderList) == 1:
+            return
+        else:
+            self.folderList.pop()
+            self.folder = self.folderList[-1]
+            self.fileManagementWidget.repaintByParent()
 
     def __open_file_func(self):
         filename, _ = QFileDialog.getOpenFileName(
-            self, "选取一张图像", "./", 'Image files(*.jpg *.gif *.png)'
+            self, "选取一张图像", "./", "Image files(*.jpg *.gif *.png)"
         )
         if filename != "":
-            print(filename)
+            self.folder.append(File(filename))
+            self.fileManagementWidget.repaintByParent()
 
     def __build_menubar(self):
         menubar = self.menuBar()
