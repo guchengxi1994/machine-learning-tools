@@ -1,11 +1,21 @@
+import os
 from typing import List
 from PySide6 import QtCore
-from PySide6.QtWidgets import QFrame, QToolButton, QMainWindow, QGridLayout, QMessageBox
+from PySide6.QtGui import QIcon, QAction, QCursor
+from PySide6.QtWidgets import (
+    QFrame,
+    QToolButton,
+    QMainWindow,
+    QGridLayout,
+    QMessageBox,
+    QMenu,
+)
 from components.base_toolbutton import BaseToolButton
 from components.file_widget import FileElementWidget
 from components.folder_widget import FolderElementWidget
 
 from models import Folder
+from models.file_model import File
 
 
 class FileManagementWidget(QFrame):
@@ -22,17 +32,22 @@ class FileManagementWidget(QFrame):
         self.__layout.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self.setLayout(self.__layout)
         self.folder: Folder = self.parent.folder
-        self.folder.append(Folder("1", [Folder("11", [])]))
-        self.folder.append(Folder("2", []))
-        self.folder.append(Folder("3", []))
-        self.folder.append(Folder("4", []))
-        self.folder.append(Folder("5", []))
-        self.folder.append(Folder("6", []))
-        self.folder.append(Folder("7", []))
-        self.folder.append(Folder("8", []))
-        self.folder.append(Folder("9", []))
-        self.folder.append(Folder("10", []))
+        # self.folder.append(
+        #     Folder(
+        #         "1", [Folder("11", [Folder("12", [Folder("13", [Folder("14", [])])])])]
+        #     )
+        # )
+        # self.folder.append(Folder("2", []))
+        # self.folder.append(Folder("3", []))
+        # self.folder.append(Folder("4", []))
+        # self.folder.append(Folder("5", []))
+        # self.folder.append(Folder("6", []))
+        # self.folder.append(Folder("7", []))
+        # self.folder.append(Folder("8", []))
+        # self.folder.append(Folder("9", []))
+        # self.folder.append(Folder("10", []))
         self.__render()
+        self.setAcceptDrops(True)
 
     def __render(self, repaint: bool = False):
         if repaint:
@@ -117,3 +132,32 @@ class FileManagementWidget(QFrame):
                     break
                 self.__layout.removeWidget(self.elements[i * rowCount + j])
                 self.__layout.addWidget(self.elements[i * rowCount + j], i, j)
+
+    ## 拖拽文件
+    def dragEnterEvent(self, event) -> None:
+        if event.mimeData().hasText():
+            event.accept()
+        else:
+            event.ignore()
+
+    def dropEvent(self, e):
+        filePathList = e.mimeData().text()
+        filePath: str = filePathList.split("\n")[0]  # 拖拽多文件只取第一个地址
+        # print(filePath)
+        filePath = filePath.replace("file:///", "")
+
+        if os.path.isfile(filePath):
+            self.parent.folder.append(File(filePath))
+            self.__render(True)
+
+    def create_rightmenu(self):
+        groupBoxMenu = QMenu(self)
+        formatAction = QAction(QIcon("assets/format.png"), "刷新", self)
+        formatAction.triggered.connect(self.__repaint)
+        groupBoxMenu.addAction(formatAction)
+
+        groupBoxMenu.popup(QCursor.pos())
+
+    def mousePressEvent(self, event) -> None:
+        if event.buttons() == QtCore.Qt.RightButton:
+            self.create_rightmenu()

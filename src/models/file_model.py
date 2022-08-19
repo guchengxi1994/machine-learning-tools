@@ -9,3 +9,10 @@ class File:
 
     def __hash__(self) -> int:
         return hash(self.fileName)
+
+    def dump(self) -> dict:
+        return {"filename": self.fileName}
+    
+    @staticmethod
+    def fromJson(s:dict):
+        return File(fileName=s["filename"])

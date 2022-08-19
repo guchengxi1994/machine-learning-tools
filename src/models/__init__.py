@@ -10,8 +10,10 @@ def load_structure_file(filePath: str) -> Folder:
         jsonStructure = json.load(open(filePath, "r", encoding="utf-8"))
     else:
         jsonStructure = {}
-
+    # print(jsonStructure)
     if jsonStructure == {}:
         return Folder("root", [])
     else:
-        return Folder("root", [])
+        # return Folder("root", [])
+        return Folder.fromJson(jsonStructure)
+

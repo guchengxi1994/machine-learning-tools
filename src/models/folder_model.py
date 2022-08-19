@@ -25,3 +25,21 @@ class Folder:
         if type(f) is File or type(f) is self.__class__:
             if f in self.children:
                 self.children.remove(f)
+
+    def dump(self) -> dict:
+        base = {"folderName": self.folderName, "children": []}
+
+        for i in self.children:
+            base["children"].append(i.dump())
+
+        return base
+
+    @staticmethod
+    def fromJson(s:dict):
+        f = Folder(s["folderName"],[])
+        for i in s["children"]:
+            if i.get("children") is not None:
+                f.append(Folder.fromJson(i))
+            else:
+                f.append(File.fromJson(i))
+        return f

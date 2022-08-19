@@ -53,7 +53,7 @@ class MainScreen(QMainWindow):
         self.setCentralWidget(mainWidget)
 
     def __loading_folder(self):
-        self.folder = load_structure_file("")
+        self.folder = load_structure_file("_private/structure.json")
 
     def __build_left_side_toolbar(self):
         self.leftSideToolbar = QVBoxLayout()
@@ -63,8 +63,12 @@ class MainScreen(QMainWindow):
         self.backButton = CustomButton("Back", "assets/back.png")
         self.backButton.clicked.connect(self.__prev_func)
 
+        self.saveButton = CustomButton("Save", "assets/save.png")
+        self.saveButton.clicked.connect(self.__save_file)
+
         self.leftSideToolbar.addWidget(self.openFileButton)
         self.leftSideToolbar.addWidget(self.backButton)
+        self.leftSideToolbar.addWidget(self.saveButton)
         self.leftSideToolbar.setAlignment(QtCore.Qt.AlignTop)
 
     def __prev_func(self):
@@ -82,6 +86,17 @@ class MainScreen(QMainWindow):
         if filename != "":
             self.folder.append(File(filename))
             self.fileManagementWidget.repaintByParent()
+
+    def __save_file(self):
+        d = self.folder.dump()
+        # print(d)
+        with open("_private/structure.json", "w", encoding="utf-8") as f:
+            json.dump(
+                d,
+                f,
+                ensure_ascii=False,
+                indent= " "
+            )
 
     def __build_menubar(self):
         menubar = self.menuBar()
