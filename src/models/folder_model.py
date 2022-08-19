@@ -20,3 +20,8 @@ class Folder:
         if type(f) is File or type(f) is self.__class__:
             if f not in self.children:
                 self.children.append(f)
+
+    def remove(self, f: object):
+        if type(f) is File or type(f) is self.__class__:
+            if f in self.children:
+                self.children.remove(f)

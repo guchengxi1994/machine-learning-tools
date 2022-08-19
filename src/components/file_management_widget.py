@@ -1,79 +1,11 @@
 from typing import List
 from PySide6 import QtCore
-from PySide6.QtGui import QIcon
-from PySide6.QtWidgets import QFrame, QToolButton, QMainWindow, QGridLayout
+from PySide6.QtWidgets import QFrame, QToolButton, QMainWindow, QGridLayout, QMessageBox
+from components.base_toolbutton import BaseToolButton
+from components.file_widget import FileElementWidget
+from components.folder_widget import FolderElementWidget
 
 from models import Folder
-
-
-class FileElementWidget(QToolButton):
-    doubleClickSignal = QtCore.Signal(str)
-
-    def __init__(self, label: str, parent):
-        super().__init__(parent)
-        self.setText(label)
-        self.setIcon(QIcon("assets/file.png"))
-        self.setIconSize(QtCore.QSize(32, 32))
-        self.setFixedWidth(80)
-        self.setFixedHeight(70)
-        self.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
-        self.setStyleSheet("border : none")
-        self.iniDragCor = [0, 0]
-        self.label = label
-
-    def mousePressEvent(self, e) -> None:
-        # print("start", self.pos())
-        self.iniDragCor[0] = e.x()
-        self.iniDragCor[1] = e.y()
-
-    def mouseReleaseEvent(self, e) -> None:
-        # print("end", self.pos())
-        ...
-
-    def mouseDoubleClickEvent(self, event) -> None:
-        self.doubleClickSignal.emit(self.label)
-
-    def mouseMoveEvent(self, e) -> None:
-        x = e.x() - self.iniDragCor[0]
-        y = e.y() - self.iniDragCor[1]
-
-        cor = QtCore.QPoint(x, y)
-        self.move(self.mapToParent(cor))  # 需要maptoparent一下才可以的,否则只是相对位置。
-
-
-class FolderElementWidget(QToolButton):
-    doubleClickSignal = QtCore.Signal(str)
-
-    def __init__(self, folder: Folder, parent):
-        super().__init__(parent)
-        self.setText(folder.folderName)
-        self.setIcon(QIcon("assets/folder.png"))
-        self.setIconSize(QtCore.QSize(32, 32))
-        self.setFixedWidth(80)
-        self.setFixedHeight(70)
-        self.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
-        self.setStyleSheet("border : none")
-        self.iniDragCor = [0, 0]
-        self.folder = folder
-
-    def mouseDoubleClickEvent(self, event) -> None:
-        self.doubleClickSignal.emit(self.folder.folderName)
-
-    def mousePressEvent(self, e) -> None:
-        # print("start", self.pos())
-        self.iniDragCor[0] = e.x()
-        self.iniDragCor[1] = e.y()
-
-    def mouseReleaseEvent(self, e) -> None:
-        # print("end", self.pos())
-        ...
-
-    def mouseMoveEvent(self, e) -> None:
-        x = e.x() - self.iniDragCor[0]
-        y = e.y() - self.iniDragCor[1]
-
-        cor = QtCore.QPoint(x, y)
-        self.move(self.mapToParent(cor))  # 需要maptoparent一下才可以的,否则只是相对位置。
 
 
 class FileManagementWidget(QFrame):
@@ -115,8 +47,9 @@ class FileManagementWidget(QFrame):
                 f = FolderElementWidget(i, self)
                 f.doubleClickSignal.connect(self.__double_click)
             else:
-                f = FileElementWidget(i.fileName, self)
+                f = FileElementWidget(i, self)
                 f.doubleClickSignal.connect(self.__double_click_file)
+            f.rightClickSingal.connect(self.__handle_item_right_button_click)
             self.elements.append(f)
 
         elementLength = len(self.elements)
@@ -150,6 +83,24 @@ class FileManagementWidget(QFrame):
         self.folder: Folder = _element.folder
         self.parent.folderList.append(self.folder)
         self.__render(repaint=True)
+
+    def __handle_item_right_button_click(self, info: tuple):
+        _element: BaseToolButton
+        for i in self.elements:
+            if i.label == info[1]:
+                _element = i
+                break
+        print(type(_element))
+        m = QMessageBox()
+        m.setText("是否要删除？")
+        m.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        m.setDefaultButton(QMessageBox.Yes)
+        r = m.exec()
+        # print(r)
+        if r == QMessageBox.Yes:
+            # print(".")
+            self.parent.folder.remove(_element.T)
+            self.__render(repaint=True)
 
     def __double_click_file(self, info):
         print("file", info)
