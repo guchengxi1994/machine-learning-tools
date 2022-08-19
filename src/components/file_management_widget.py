@@ -10,6 +10,7 @@ from PySide6.QtWidgets import (
     QMenu,
     QWidget,
     QScrollArea,
+    QInputDialog,
 )
 from components.base_toolbutton import BaseToolButton
 from components.file_widget import FileElementWidget
@@ -32,6 +33,7 @@ class FileManagementWidget(QWidget):
 
         self.mainLayout = QHBoxLayout(self)
 
+        ## 添加滚动区域
         self.scrollArea = QScrollArea(self)
         self.scrollArea.setWidgetResizable(True)
 
@@ -56,7 +58,7 @@ class FileManagementWidget(QWidget):
                 i = None
 
         self.elements: List[BaseToolButton] = []
-        for i in self.folder.children:
+        for i in self.parent.folderList[-1].children:
             if type(i) is Folder:
                 f = FolderElementWidget(i, self)
                 f.doubleClickSignal.connect(self.__double_click)
@@ -94,7 +96,8 @@ class FileManagementWidget(QWidget):
         #     print(type(i))
 
     def repaintByParent(self, repaint: bool = True):
-        self.folder: Folder = self.parent.folder
+        # self.folder: Folder = self.parent.folder
+        self.folder = self.parent.folderList[-1]
         self.__render(repaint=repaint)
 
     def resizeEvent(self, event) -> None:
@@ -197,17 +200,28 @@ class FileManagementWidget(QWidget):
         filePath = filePath.replace("file:///", "")
 
         if os.path.isfile(filePath):
-            self.parent.folder.append(File(filePath))
+            self.parent.folderList[-1].append(File(filePath))
             self.__render(True)
 
     def create_rightmenu(self):
         groupBoxMenu = QMenu(self)
         formatAction = QAction(QIcon(FORMAT_ICON), "刷新", self)
         formatAction.triggered.connect(self.__repaint)
-        groupBoxMenu.addAction(formatAction)
+        createFolderAction = QAction(QIcon(CREATE_FOLDER_ICON), "新建文件夹", self)
+        createFolderAction.triggered.connect(self.__create_new_folder)
 
+        groupBoxMenu.addAction(formatAction)
+        groupBoxMenu.addAction(createFolderAction)
         groupBoxMenu.popup(QCursor.pos())
 
     def mousePressEvent(self, event) -> None:
         if event.buttons() == QtCore.Qt.RightButton:
             self.create_rightmenu()
+
+    ## 创建一个逻辑文件夹
+    def __create_new_folder(self):
+        text, ok = QInputDialog.getText(self, "输入文件夹名称", "输入")
+        if ok and text is not None and text != "":
+            # print(text)
+            self.parent.folderList[-1].append(Folder(folderName=text, children=[]))
+            self.__render(True)

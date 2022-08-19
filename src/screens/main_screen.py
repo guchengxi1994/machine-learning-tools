@@ -82,7 +82,7 @@ class MainScreen(QMainWindow):
             return
         else:
             self.folderList.pop()
-            self.folder = self.folderList[-1]
+            # self.folder = self.folderList[-1]
             self.fileManagementWidget.repaintByParent()
 
     def __open_file_func(self):
@@ -90,7 +90,7 @@ class MainScreen(QMainWindow):
             self, "选取一张图像", "./", "Image files(*.jpg *.gif *.png)"
         )
         if filename != "":
-            self.folder.append(File(filename))
+            self.folderList[-1].append(File(filename))
             self.fileManagementWidget.repaintByParent()
 
     def __save_file(self):

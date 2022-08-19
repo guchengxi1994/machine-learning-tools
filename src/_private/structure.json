@@ -15,7 +15,11 @@
          "children": [
           {
            "folderName": "14",
-           "children": []
+           "children": [
+            {
+             "filename": "D:/github_repo/machine-learning-tools/src/assets/add_file.png"
+            }
+           ]
           }
          ]
         }

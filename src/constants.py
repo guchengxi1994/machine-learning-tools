@@ -11,6 +11,7 @@ FOLDER_ICON = ""
 ADD_FILE_ICON = ""
 DELETE_ICON = ""
 FORMAT_ICON = ""
+CREATE_FOLDER_ICON = ""
 APP_TITLE = ""
 
 
@@ -28,4 +29,5 @@ else:
         ADD_FILE_ICON = yamlData["icons"]["add_file"]
         DELETE_ICON = yamlData["icons"]["delete"]
         FORMAT_ICON = yamlData["icons"]["format"]
+        CREATE_FOLDER_ICON = yamlData["icons"]["create_folder"]
         APP_TITLE = yamlData["strings"]["app_title"]

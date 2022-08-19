@@ -8,6 +8,7 @@ icons:
   folder: assets/folder.png
   delete: assets/delete.png
   format: assets/format.png
+  create_folder: assets/create_new_folder.png
 
 strings:
   app_title: Machine learning tools
