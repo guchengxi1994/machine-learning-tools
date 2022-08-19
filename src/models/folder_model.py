@@ -35,8 +35,8 @@ class Folder:
         return base
 
     @staticmethod
-    def fromJson(s:dict):
-        f = Folder(s["folderName"],[])
+    def fromJson(s: dict):
+        f = Folder(s["folderName"], [])
         for i in s["children"]:
             if i.get("children") is not None:
                 f.append(Folder.fromJson(i))

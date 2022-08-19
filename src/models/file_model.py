@@ -12,7 +12,7 @@ class File:
 
     def dump(self) -> dict:
         return {"filename": self.fileName}
-    
+
     @staticmethod
-    def fromJson(s:dict):
+    def fromJson(s: dict):
         return File(fileName=s["filename"])

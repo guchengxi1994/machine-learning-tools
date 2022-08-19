@@ -16,4 +16,3 @@ def load_structure_file(filePath: str) -> Folder:
     else:
         # return Folder("root", [])
         return Folder.fromJson(jsonStructure)
-

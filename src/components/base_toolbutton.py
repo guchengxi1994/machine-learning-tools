@@ -3,6 +3,7 @@ from PySide6.QtWidgets import QToolButton, QMenu
 from PySide6 import QtCore
 from PySide6.QtGui import QIcon, QAction, QCursor
 from models import Folder, File
+from constants import *
 
 FileOrFolder = TypeVar("FileOrFolder", File, Folder)
 
@@ -16,11 +17,11 @@ class BaseToolButton(QToolButton):
         if type(T) is File:
             self.setText(T.fileName)
             self.label = T.fileName
-            self.setIcon(QIcon("assets/file.png"))
+            self.setIcon(QIcon(FILE_ICON))
         else:
             self.setText(T.folderName)
             self.label = T.folderName
-            self.setIcon(QIcon("assets/folder.png"))
+            self.setIcon(QIcon(FOLDER_ICON))
         self.setIconSize(QtCore.QSize(32, 32))
         self.setFixedWidth(80)
         self.setFixedHeight(70)
@@ -49,7 +50,7 @@ class BaseToolButton(QToolButton):
 
     def create_rightmenu(self):
         groupBoxMenu = QMenu(self)
-        deleteAction = QAction(QIcon("assets/delete.png"), "删除数据", self)
+        deleteAction = QAction(QIcon(DELETE_ICON), "删除数据", self)
         deleteAction.triggered.connect(self.__delete_item)
         groupBoxMenu.addAction(deleteAction)
 

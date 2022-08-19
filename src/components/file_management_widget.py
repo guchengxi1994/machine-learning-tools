@@ -16,6 +16,7 @@ from components.folder_widget import FolderElementWidget
 
 from models import Folder
 from models.file_model import File
+from constants import *
 
 
 class FileManagementWidget(QFrame):
@@ -32,20 +33,6 @@ class FileManagementWidget(QFrame):
         self.__layout.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self.setLayout(self.__layout)
         self.folder: Folder = self.parent.folder
-        # self.folder.append(
-        #     Folder(
-        #         "1", [Folder("11", [Folder("12", [Folder("13", [Folder("14", [])])])])]
-        #     )
-        # )
-        # self.folder.append(Folder("2", []))
-        # self.folder.append(Folder("3", []))
-        # self.folder.append(Folder("4", []))
-        # self.folder.append(Folder("5", []))
-        # self.folder.append(Folder("6", []))
-        # self.folder.append(Folder("7", []))
-        # self.folder.append(Folder("8", []))
-        # self.folder.append(Folder("9", []))
-        # self.folder.append(Folder("10", []))
         self.__render()
         self.setAcceptDrops(True)
 
@@ -78,7 +65,20 @@ class FileManagementWidget(QFrame):
                     break
                 self.__layout.addWidget(self.elements[i * rowCount + j], i, j)
 
-        print("children length:", len(self.children()))
+        print(
+            "children length:",
+            len(
+                list(
+                    filter(
+                        lambda x: type(x) is FileElementWidget
+                        or type(x) is FolderElementWidget,
+                        self.children(),
+                    )
+                )
+            ),
+        )
+        # for i in self.children():
+        #     print(type(i))
 
     def repaintByParent(self, repaint: bool = True):
         self.folder: Folder = self.parent.folder
@@ -152,7 +152,7 @@ class FileManagementWidget(QFrame):
 
     def create_rightmenu(self):
         groupBoxMenu = QMenu(self)
-        formatAction = QAction(QIcon("assets/format.png"), "刷新", self)
+        formatAction = QAction(QIcon(FORMAT_ICON), "刷新", self)
         formatAction.triggered.connect(self.__repaint)
         groupBoxMenu.addAction(formatAction)
 

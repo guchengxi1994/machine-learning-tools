@@ -1,0 +1,13 @@
+structure: _private/structure.json
+icons:
+  add_file: assets/add_file.png
+  back: assets/back.png
+  save: assets/save.png
+  app_icon: assets/icon2.png
+  file: assets/file.png
+  folder: assets/folder.png
+  delete: assets/delete.png
+  format: assets/format.png
+
+strings:
+  app_title: Machine learning tools

@@ -17,6 +17,8 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from constants import *
+
 
 class MainScreen(QMainWindow):
     def __init__(
@@ -29,8 +31,8 @@ class MainScreen(QMainWindow):
         self.folderList: List[Folder] = []
         self.folderList.append(self.folder)
 
-        self.setWindowTitle("Machine learning tools")
-        self.setWindowIcon(QIcon("assets/icon2.png"))
+        self.setWindowTitle(APP_TITLE)
+        self.setWindowIcon(QIcon(APP_ICON))
         self.setMinimumWidth(800)
         self.setMinimumHeight(600)
 
@@ -53,17 +55,17 @@ class MainScreen(QMainWindow):
         self.setCentralWidget(mainWidget)
 
     def __loading_folder(self):
-        self.folder = load_structure_file("_private/structure.json")
+        self.folder = load_structure_file(STRUCTURE_FILE_PATH)
 
     def __build_left_side_toolbar(self):
         self.leftSideToolbar = QVBoxLayout()
-        self.openFileButton = CustomButton("Add File", "assets/add_file.png")
+        self.openFileButton = CustomButton("Add File", ADD_FILE_ICON)
         self.openFileButton.clicked.connect(self.__open_file_func)
 
-        self.backButton = CustomButton("Back", "assets/back.png")
+        self.backButton = CustomButton("Back", BACK_ICON)
         self.backButton.clicked.connect(self.__prev_func)
 
-        self.saveButton = CustomButton("Save", "assets/save.png")
+        self.saveButton = CustomButton("Save", SAVE_ICON)
         self.saveButton.clicked.connect(self.__save_file)
 
         self.leftSideToolbar.addWidget(self.openFileButton)
@@ -90,13 +92,8 @@ class MainScreen(QMainWindow):
     def __save_file(self):
         d = self.folder.dump()
         # print(d)
-        with open("_private/structure.json", "w", encoding="utf-8") as f:
-            json.dump(
-                d,
-                f,
-                ensure_ascii=False,
-                indent= " "
-            )
+        with open(STRUCTURE_FILE_PATH, "w", encoding="utf-8") as f:
+            json.dump(d, f, ensure_ascii=False, indent=" ")
 
     def __build_menubar(self):
         menubar = self.menuBar()
