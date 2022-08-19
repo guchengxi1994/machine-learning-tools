@@ -1,5 +1,7 @@
 import sys
 
+from components.toaster import QToaster
+
 sys.path.append("..")
 
 from typing import List
@@ -31,6 +33,7 @@ class MainScreen(QMainWindow):
         self.folderList: List[Folder] = []
         self.folderList.append(self.folder)
 
+        ## 在这里写`show()` 方法，主要是因为在main函数里写的话任务栏图标会丢失
         self.show()
         self.setWindowTitle(APP_TITLE)
         self.setWindowIcon(QIcon(APP_ICON))
@@ -95,6 +98,14 @@ class MainScreen(QMainWindow):
         # print(d)
         with open(STRUCTURE_FILE_PATH, "w", encoding="utf-8") as f:
             json.dump(d, f, ensure_ascii=False, indent=" ")
+
+        QToaster.showMessage(
+            self,
+            "保存成功",
+            timeout=1000,
+            windowWidth=self.width(),
+            windowHeight=self.height(),
+        )
 
     def __build_menubar(self):
         menubar = self.menuBar()

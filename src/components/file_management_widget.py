@@ -21,7 +21,7 @@ from constants import *
 
 class FileManagementWidget(QFrame):
     elementWidth = 80
-    elementHeight = 100
+    elementHeight = 70
 
     def __init__(self, parent: QMainWindow) -> None:
         super(FileManagementWidget, self).__init__()
@@ -44,7 +44,7 @@ class FileManagementWidget(QFrame):
                 i.deleteLater()
                 i = None
 
-        self.elements: List[QToolButton] = []
+        self.elements: List[BaseToolButton] = []
         for i in self.folder.children:
             if type(i) is Folder:
                 f = FolderElementWidget(i, self)
@@ -92,6 +92,39 @@ class FileManagementWidget(QFrame):
     ## 文件移动事件
     def __handle_file_move(self, info: tuple):
         print(info)
+        resultList: List[FolderElementWidget] = []
+        for i in self.elements:
+            ## 文件夹是不能移入文件的
+            if type(i) is not FolderElementWidget:
+                continue
+            if i.label == info[2]:
+                continue
+            ## 这里只判断左上角的点在另一个文件夹中间的情况
+            if (
+                i.pos().x() < info[0]
+                and i.pos().x() + self.elementWidth > info[0]
+                and i.pos().y() < info[1]
+                and i.pos().y() + self.elementHeight > info[1]
+            ):
+                resultList.append(i)
+        ## 如果已经有两个文件夹重叠了，那么就无法移入
+        if len(resultList) == 1:
+            m = QMessageBox()
+            m.setText("是否要将{}移入{}?".format(info[2], resultList[0].label))
+            m.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+            m.setDefaultButton(QMessageBox.No)
+            r = m.exec()
+
+            if r == QMessageBox.Yes:
+                _element: BaseToolButton
+                for i in self.elements:
+                    if i.label == info[2]:
+                        _element = i
+                        break
+                if _element.T not in resultList[0].folder.children:
+                    self.parent.folder.remove(_element.T)
+                    resultList[0].folder.append(_element.T)
+                    self.__render(repaint=True)
 
     def __double_click(self, info):
         _element = list(

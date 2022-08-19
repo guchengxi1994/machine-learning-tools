@@ -39,7 +39,7 @@ class BaseToolButton(QToolButton):
 
     def mouseReleaseEvent(self, e) -> None:
         # print("end", self.pos())
-        self.moveFileSingal.emit((self.pos().x(), self.pos().y()))
+        self.moveFileSingal.emit((self.pos().x(), self.pos().y(), self.label))
 
     def mouseDoubleClickEvent(self, event) -> None:
         self.doubleClickSignal.emit(self.label)

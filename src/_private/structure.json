@@ -55,11 +55,12 @@
   },
   {
    "folderName": "9",
-   "children": []
-  },
-  {
-   "folderName": "10",
-   "children": []
+   "children": [
+    {
+     "folderName": "10",
+     "children": []
+    }
+   ]
   }
  ]
 }
