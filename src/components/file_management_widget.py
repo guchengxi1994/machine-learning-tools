@@ -3,12 +3,13 @@ from typing import List
 from PySide6 import QtCore
 from PySide6.QtGui import QIcon, QAction, QCursor
 from PySide6.QtWidgets import (
-    QFrame,
-    QToolButton,
     QMainWindow,
     QGridLayout,
+    QHBoxLayout,
     QMessageBox,
     QMenu,
+    QWidget,
+    QScrollArea,
 )
 from components.base_toolbutton import BaseToolButton
 from components.file_widget import FileElementWidget
@@ -18,20 +19,30 @@ from models import Folder
 from models.file_model import File
 from constants import *
 
+SCROLLAREA_MARGIN = 175
 
-class FileManagementWidget(QFrame):
+
+class FileManagementWidget(QWidget):
     elementWidth = 80
     elementHeight = 70
 
     def __init__(self, parent: QMainWindow) -> None:
         super(FileManagementWidget, self).__init__()
-        self.setLineWidth(5)  # 设置外线宽度
-        self.setMidLineWidth(3)  # 设置中线宽度
-        self.setFrameStyle(QFrame.Panel | QFrame.Plain)  # 根据延时表参数写入
         self.parent = parent
-        self.__layout = QGridLayout()
+
+        self.mainLayout = QHBoxLayout(self)
+
+        self.scrollArea = QScrollArea(self)
+        self.scrollArea.setWidgetResizable(True)
+
+        self.contents = QWidget()
+
+        self.scrollArea.setWidget(self.contents)
+
+        self.__layout = QGridLayout(self.contents)
         self.__layout.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
-        self.setLayout(self.__layout)
+        # self.setLayout(self.__layout)
+        self.mainLayout.addWidget(self.scrollArea)
         self.folder: Folder = self.parent.folder
         self.__render()
         ## 可以文件拖拽进主窗体
@@ -57,7 +68,7 @@ class FileManagementWidget(QFrame):
             self.elements.append(f)
 
         elementLength = len(self.elements)
-        __currentWindowWidth = self.parent.width() - 100
+        __currentWindowWidth = self.parent.width() - SCROLLAREA_MARGIN
 
         rowCount = int(__currentWindowWidth / self.elementWidth)
         rows = int(elementLength / rowCount) + 1
@@ -67,18 +78,18 @@ class FileManagementWidget(QFrame):
                     break
                 self.__layout.addWidget(self.elements[i * rowCount + j], i, j)
 
-        print(
-            "children length:",
-            len(
-                list(
-                    filter(
-                        lambda x: type(x) is FileElementWidget
-                        or type(x) is FolderElementWidget,
-                        self.children(),
-                    )
-                )
-            ),
-        )
+        # print(
+        #     "children length:",
+        #     len(
+        #         list(
+        #             filter(
+        #                 lambda x: type(x) is FileElementWidget
+        #                 or type(x) is FolderElementWidget,
+        #                 self.children(),
+        #             )
+        #         )
+        #     ),
+        # )
         # for i in self.children():
         #     print(type(i))
 
@@ -122,7 +133,7 @@ class FileManagementWidget(QFrame):
                         _element = i
                         break
                 if _element.T not in resultList[0].folder.children:
-                    self.parent.folder.remove(_element.T)
+                    self.parent.folderList[-1].remove(_element.T)
                     resultList[0].folder.append(_element.T)
                     self.__render(repaint=True)
 
@@ -161,7 +172,7 @@ class FileManagementWidget(QFrame):
 
     def __repaint(self):
         elementLength = len(self.elements)
-        __currentWindowWidth = self.parent.width() - 100
+        __currentWindowWidth = self.parent.width() - SCROLLAREA_MARGIN
 
         rowCount = int(__currentWindowWidth / self.elementWidth)
         rows = int(elementLength / rowCount) + 1

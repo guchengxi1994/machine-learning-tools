@@ -230,5 +230,5 @@ class QToaster(QtWidgets.QFrame):
         self.show()
         startPointX = windowHeight / 2 - geo.height() / 2
         startPointY = windowWidth / 2 - geo.width() / 2
-        self.move(startPointY,startPointX)
+        self.move(startPointY, startPointX)
         self.opacityAni.start()
