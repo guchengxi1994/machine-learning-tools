@@ -31,6 +31,7 @@ class MainScreen(QMainWindow):
         self.folderList: List[Folder] = []
         self.folderList.append(self.folder)
 
+        self.show()
         self.setWindowTitle(APP_TITLE)
         self.setWindowIcon(QIcon(APP_ICON))
         self.setMinimumWidth(800)

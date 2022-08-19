@@ -11,6 +11,8 @@ FileOrFolder = TypeVar("FileOrFolder", File, Folder)
 class BaseToolButton(QToolButton):
     doubleClickSignal = QtCore.Signal(str)
     rightClickSingal = QtCore.Signal(tuple)
+    ## item 移动事件，可能移入文件夹中
+    moveFileSingal = QtCore.Signal(tuple)
 
     def __init__(self, T: FileOrFolder, parent) -> None:
         super().__init__(parent)
@@ -37,7 +39,7 @@ class BaseToolButton(QToolButton):
 
     def mouseReleaseEvent(self, e) -> None:
         # print("end", self.pos())
-        ...
+        self.moveFileSingal.emit((self.pos().x(), self.pos().y()))
 
     def mouseDoubleClickEvent(self, event) -> None:
         self.doubleClickSignal.emit(self.label)

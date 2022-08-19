@@ -34,6 +34,7 @@ class FileManagementWidget(QFrame):
         self.setLayout(self.__layout)
         self.folder: Folder = self.parent.folder
         self.__render()
+        ## 可以文件拖拽进主窗体
         self.setAcceptDrops(True)
 
     def __render(self, repaint: bool = False):
@@ -52,6 +53,7 @@ class FileManagementWidget(QFrame):
                 f = FileElementWidget(i, self)
                 f.doubleClickSignal.connect(self.__double_click_file)
             f.rightClickSingal.connect(self.__handle_item_right_button_click)
+            f.moveFileSingal.connect(self.__handle_file_move)
             self.elements.append(f)
 
         elementLength = len(self.elements)
@@ -86,6 +88,10 @@ class FileManagementWidget(QFrame):
 
     def resizeEvent(self, event) -> None:
         self.__repaint()
+
+    ## 文件移动事件
+    def __handle_file_move(self, info: tuple):
+        print(info)
 
     def __double_click(self, info):
         _element = list(
