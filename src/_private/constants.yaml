@@ -1,4 +1,5 @@
 structure: _private/structure.json
+db: _private/db.db
 icons:
   add_file: assets/add_file.png
   back: assets/back.png

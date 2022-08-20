@@ -1,6 +1,7 @@
 import sys
 
 from components.toaster import QToaster
+from screens.project_management_screen import ProjectManagementScreen
 
 sys.path.append("..")
 
@@ -23,9 +24,7 @@ from constants import *
 
 
 class MainScreen(QMainWindow):
-    def __init__(
-        self,
-    ) -> None:
+    def __init__(self,) -> None:
         super().__init__()
         ## 读取结构
         self.__loading_folder()
@@ -111,8 +110,23 @@ class MainScreen(QMainWindow):
         menubar = self.menuBar()
         sysMenu = menubar.addMenu("&System")
 
+        ## 创建新项目功能
+        createProjectAction = QAction("New Project", self)
+        createProjectAction.setStatusTip("Create a new project")
+        sysMenu.addAction(createProjectAction)
+
+        ## 管理所有项目功能
+        manageProjectAction = QAction("Project Management", self)
+        manageProjectAction.setStatusTip("Manage all projects")
+        manageProjectAction.triggered.connect(self.__open_project_management_screen)
+        sysMenu.addAction(manageProjectAction)
+
         exitAction = QAction("Exit", self)
         exitAction.setShortcut("Ctrl+Q")
         exitAction.setStatusTip("Exit application")
         exitAction.triggered.connect(self.close)
         sysMenu.addAction(exitAction)
+
+    def __open_project_management_screen(self):
+        d = ProjectManagementScreen()
+        d.exec()

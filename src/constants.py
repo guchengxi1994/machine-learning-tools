@@ -2,6 +2,8 @@ import os
 import yaml
 
 CONSTANTS_FILE_PATH = "_private/constants.yaml"
+CONSTANTS_DB_PATH = "_private/db.db"
+CONSTANTS_DB_NAME = "db.db"
 STRUCTURE_FILE_PATH = ""
 APP_ICON = ""
 BACK_ICON = ""
@@ -13,6 +15,7 @@ DELETE_ICON = ""
 FORMAT_ICON = ""
 CREATE_FOLDER_ICON = ""
 APP_TITLE = ""
+PROJECT_MANAGEMENT = "Project management"
 
 
 if not os.path.exists(CONSTANTS_FILE_PATH):
