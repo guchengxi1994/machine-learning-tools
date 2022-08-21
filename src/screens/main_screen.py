@@ -1,13 +1,12 @@
 import sys
 
-from components.toaster import QToaster
-from screens.project_management_screen import ProjectManagementScreen
-
 sys.path.append("..")
-
 from typing import List
+
 from components.custom_button import CustomButton
 from components.file_management_widget import FileManagementWidget
+from components.toaster import QToaster
+from constants import *
 from models import *
 from PySide6 import QtCore
 from PySide6.QtGui import QAction, QIcon
@@ -20,7 +19,8 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from constants import *
+from screens.project_management_screen import ProjectManagementScreen
+from screens.sub_folder_screen import SubFolderScreen
 
 
 class MainScreen(QMainWindow):
@@ -46,6 +46,7 @@ class MainScreen(QMainWindow):
 
         stackLayout = QStackedLayout()
         self.fileManagementWidget = FileManagementWidget(self)
+        self.fileManagementWidget.navigateSingal.connect(self.__handle_navigate)
         stackLayout.addWidget(self.fileManagementWidget)
 
         layout.addLayout(self.leftSideToolbar)
@@ -130,3 +131,8 @@ class MainScreen(QMainWindow):
     def __open_project_management_screen(self):
         d = ProjectManagementScreen()
         d.exec()
+
+    def __handle_navigate(self, info: Folder):
+        # print(info)
+        s = SubFolderScreen(info)
+        s.show()

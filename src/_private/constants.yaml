@@ -6,10 +6,13 @@ icons:
   save: assets/save.png
   app_icon: assets/icon2.png
   file: assets/file.png
+  file_selected: assets/file_selected.png
   folder: assets/folder.png
+  folder_selected: assets/folder_selected.png
   delete: assets/delete.png
   format: assets/format.png
   create_folder: assets/create_new_folder.png
+  navigate: assets/navigate.png
 
 strings:
   app_title: Machine learning tools

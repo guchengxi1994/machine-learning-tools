@@ -26,6 +26,8 @@ SCROLLAREA_MARGIN = 175
 class FileManagementWidget(QWidget):
     elementWidth = 80
     elementHeight = 70
+    ## 新窗口打开子文件夹
+    navigateSingal = QtCore.Signal(Folder)
 
     def __init__(self, parent: QMainWindow) -> None:
         super(FileManagementWidget, self).__init__()
@@ -62,6 +64,7 @@ class FileManagementWidget(QWidget):
             if type(i) is Folder:
                 f = FolderElementWidget(i, self)
                 f.doubleClickSignal.connect(self.__double_click)
+                f.navigateSingal.connect(self.__handle_navigate)
             else:
                 f = FileElementWidget(i, self)
                 f.doubleClickSignal.connect(self.__double_click_file)
@@ -116,9 +119,9 @@ class FileManagementWidget(QWidget):
             ## 这里只判断左上角的点在另一个文件夹中间的情况
             if (
                 i.pos().x() < info[0]
-                and i.pos().x() + self.elementWidth > info[0]
+                and i.pos().x() + 0.5 * self.elementWidth > info[0]
                 and i.pos().y() < info[1]
-                and i.pos().y() + self.elementHeight > info[1]
+                and i.pos().y() + 0.5 * self.elementHeight > info[1]
             ):
                 resultList.append(i)
         ## 如果已经有两个文件夹重叠了，那么就无法移入
@@ -225,3 +228,7 @@ class FileManagementWidget(QWidget):
             # print(text)
             self.parent.folderList[-1].append(Folder(folderName=text, children=[]))
             self.__render(True)
+
+    def __handle_navigate(self, info: Folder):
+        # print(info)
+        self.navigateSingal.emit(info)

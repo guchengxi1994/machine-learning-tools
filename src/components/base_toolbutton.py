@@ -13,6 +13,8 @@ class BaseToolButton(QToolButton):
     rightClickSingal = QtCore.Signal(tuple)
     ## item 移动事件，可能移入文件夹中
     moveFileSingal = QtCore.Signal(tuple)
+    ## 新窗口打开子文件夹
+    navigateSingal = QtCore.Signal(Folder)
 
     def __init__(self, T: FileOrFolder, parent) -> None:
         super().__init__(parent)
@@ -36,9 +38,16 @@ class BaseToolButton(QToolButton):
         # print("start", self.pos())
         self.iniDragCor[0] = e.x()
         self.iniDragCor[1] = e.y()
+        if type(self.T) is Folder:
+            self.setIcon(QIcon(FOLDER_SELECTED_ICON))
+        else:
+            self.setIcon(QIcon(FOLDER_SELECTED_ICON))
 
     def mouseReleaseEvent(self, e) -> None:
-        # print("end", self.pos())
+        if type(self.T) is Folder:
+            self.setIcon(QIcon(FOLDER_ICON))
+        else:
+            self.setIcon(QIcon(FILE_ICON))
         self.moveFileSingal.emit((self.pos().x(), self.pos().y(), self.label))
 
     def mouseDoubleClickEvent(self, event) -> None:
@@ -56,7 +65,19 @@ class BaseToolButton(QToolButton):
         deleteAction.triggered.connect(self.__delete_item)
         groupBoxMenu.addAction(deleteAction)
 
+        if type(self.T) is Folder:
+            openInANewWindow = QAction(QIcon(NAVIGATE_ICON), "新窗口中打开", self)
+            openInANewWindow.triggered.connect(self.__navigate)
+            groupBoxMenu.addAction(openInANewWindow)
+
         groupBoxMenu.popup(QCursor.pos())
+        if type(self.T) is Folder:
+            self.setIcon(QIcon(FOLDER_ICON))
+        else:
+            self.setIcon(QIcon(FILE_ICON))
 
     def __delete_item(self):
         self.rightClickSingal.emit(("delete", self.label))
+
+    def __navigate(self):
+        self.navigateSingal.emit(self.T)
