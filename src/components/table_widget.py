@@ -29,6 +29,8 @@ class ProjectTableWidget(QWidget):
             self.table.setItem(i, 2, QTableWidgetItem(data[i][4]))
             self.table.setItem(i, 3, QTableWidgetItem(data[i][3]))
             # self.table.setItem(i,0,QTableWidgetItem(data[i][0]))
+            self.table.setItem(i, 5, QTableWidgetItem(data[i][5]))
+            self.table.setItem(i, 6, QTableWidgetItem(data[i][6]))
             pushButton = QPushButton("打开此项目")
             pushButton.clicked.connect(self.__get_project_path)
             self.table.setCellWidget(i, 7, pushButton)

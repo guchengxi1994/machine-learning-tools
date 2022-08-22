@@ -17,7 +17,9 @@
            "folderName": "14",
            "children": [
             {
-             "filename": "D:/github_repo/machine-learning-tools/src/assets/add_file.png"
+            "projectId":1,
+             "filename": "D:/github_repo/machine-learning-tools/src/assets/add_file.png",
+             "md5": "fe9d3085508c2b2aaa0e110578dda80b"
             }
            ]
           }

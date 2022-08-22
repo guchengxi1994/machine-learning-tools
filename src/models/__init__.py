@@ -27,6 +27,20 @@ def init_DB():
         )
         query.exec(
             """
+            CREATE TABLE "file" (
+                "file_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                "file_md5" TEXT,
+                "file_path" TEXT,
+                "file_size" REAL,
+                "project_id" INTEGER,
+                "update_at" TEXT DEFAULT CURRENT_TIMESTAMP,
+                "create_at" TEXT DEFAULT CURRENT_TIMESTAMP,
+                "is_deleted" integer DEFAULT 0
+            )
+            """
+        )
+        query.exec(
+            """
             insert into project(project_name,project_file_path) values("测试项目","_private/structure.json")
             """
         )

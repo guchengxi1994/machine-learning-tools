@@ -1,3 +1,4 @@
+import subprocess
 from typing import TypeVar
 from PySide6.QtWidgets import QToolButton, QMenu
 from PySide6 import QtCore
@@ -73,6 +74,17 @@ class BaseToolButton(QToolButton):
                 # print(type(self.parent))
                 groupBoxMenu.addAction(openInANewWindow)
 
+        if type(self.T) is File:
+            secondMenu = groupBoxMenu.addMenu(QIcon(SECOND_MENU_ICON), "以...打开")
+            txtOpenAction = QAction(QIcon(TXT_ICON), "以文本打开", self)
+            txtOpenAction.triggered.connect(self.__open_with_txt)
+            vscodeOpenAction = QAction(QIcon(VSCODE_ICON), "以vscode打开", self)
+            vscodeOpenAction.triggered.connect(self.__open_with_vscode)
+            # typoraOpenAction = QAction(QIcon(TYPORA_ICON), "以typora打开", self)
+            secondMenu.addAction(txtOpenAction)
+            secondMenu.addAction(vscodeOpenAction)
+            # secondMenu.addAction(typoraOpenAction)
+
         groupBoxMenu.popup(QCursor.pos())
         if type(self.T) is Folder:
             self.setIcon(QIcon(FOLDER_ICON))
@@ -84,3 +96,13 @@ class BaseToolButton(QToolButton):
 
     def __navigate(self):
         self.navigateSingal.emit(self.T)
+    
+    def __open_with_txt(self):
+        subprocess.Popen(["notepad",self.label],shell=True)
+    
+    # def __open_with_typora(self):
+    #     ...
+
+    def __open_with_vscode(self):
+        subprocess.Popen(["code",self.label],shell=True)
+        # os.system("code {}".format(self.label))

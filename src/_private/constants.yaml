@@ -13,6 +13,10 @@ icons:
   format: assets/format.png
   create_folder: assets/create_new_folder.png
   navigate: assets/navigate.png
+  second: assets/second.png
+  txt: assets/txt.png
+  typora: assets/Typora.png
+  vscode: assets/vscode.png
 
 strings:
   app_title: Machine learning tools
