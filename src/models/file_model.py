@@ -4,17 +4,17 @@ import os
 from utils.db_utils import DATABASE, DBUtils
 from PySide6 import QtSql
 
+
 class File:
-    def __init__(self, fileName: str,projectId:int) -> None:
+    def __init__(self, fileName: str, projectId: int) -> None:
         self.fileName = fileName
         self.md5 = ""
         self.fileSize = 0
         if os.path.exists(self.fileName):
             self.fileSize = os.path.getsize(self.fileName)
-            with open(self.fileName,'rb') as f:
+            with open(self.fileName, "rb") as f:
                 self.md5 = hashlib.md5(f.read()).hexdigest()
         self.projectId = projectId
-        
 
     def __eq__(self, __o: object) -> bool:
         if type(__o) is not self.__class__:
@@ -29,10 +29,12 @@ class File:
             query = QtSql.QSqlQuery(db=DATABASE)
             sql = """
             insert into file(file_md5,file_path,file_size,project_id) values("{}","{}",{},{})
-            """.format(self.md5,self.fileName,self.fileSize,self.projectId)
+            """.format(
+                self.md5, self.fileName, self.fileSize, self.projectId
+            )
             query.exec(sql)
-        return {"filename": self.fileName,"md5":self.md5}
+        return {"filename": self.fileName, "md5": self.md5}
 
     @staticmethod
     def fromJson(s: dict):
-        return File(fileName=s["filename"],projectId=s["projectId"])
+        return File(fileName=s["filename"], projectId=s["projectId"])

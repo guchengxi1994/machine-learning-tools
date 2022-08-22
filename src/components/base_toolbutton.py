@@ -96,13 +96,13 @@ class BaseToolButton(QToolButton):
 
     def __navigate(self):
         self.navigateSingal.emit(self.T)
-    
+
     def __open_with_txt(self):
-        subprocess.Popen(["notepad",self.label],shell=True)
-    
+        subprocess.Popen(["notepad", self.label], shell=True)
+
     # def __open_with_typora(self):
     #     ...
 
     def __open_with_vscode(self):
-        subprocess.Popen(["code",self.label],shell=True)
+        subprocess.Popen(["code", self.label], shell=True)
         # os.system("code {}".format(self.label))
