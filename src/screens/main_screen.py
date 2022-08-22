@@ -17,14 +17,16 @@ from PySide6.QtWidgets import (
     QStackedLayout,
     QVBoxLayout,
     QWidget,
+    QInputDialog,
 )
+from utils.new_project import create_new_project
 
 from screens.project_management_screen import ProjectManagementScreen
 from screens.sub_folder_screen import SubFolderScreen
 
 
 class MainScreen(QMainWindow):
-    def __init__(self,) -> None:
+    def __init__(self) -> None:
         super().__init__()
         ## 读取结构
         self.__loading_folder()
@@ -45,7 +47,7 @@ class MainScreen(QMainWindow):
         self.__build_left_side_toolbar()
 
         stackLayout = QStackedLayout()
-        self.fileManagementWidget = FileManagementWidget(self)
+        self.fileManagementWidget = FileManagementWidget(self, canNavigate=True)
         self.fileManagementWidget.navigateSingal.connect(self.__handle_navigate)
         stackLayout.addWidget(self.fileManagementWidget)
 
@@ -86,9 +88,7 @@ class MainScreen(QMainWindow):
             self.fileManagementWidget.repaintByParent()
 
     def __open_file_func(self):
-        filename, _ = QFileDialog.getOpenFileName(
-            self, "选取一张图像", "./", "Image files(*.jpg *.gif *.png)"
-        )
+        filename, _ = QFileDialog.getOpenFileName(self, "选择文件", "./")
         if filename != "":
             self.folderList[-1].append(File(filename))
             self.fileManagementWidget.repaintByParent()
@@ -114,6 +114,7 @@ class MainScreen(QMainWindow):
         ## 创建新项目功能
         createProjectAction = QAction("New Project", self)
         createProjectAction.setStatusTip("Create a new project")
+        createProjectAction.triggered.connect(self.__create_new_project)
         sysMenu.addAction(createProjectAction)
 
         ## 管理所有项目功能
@@ -131,8 +132,22 @@ class MainScreen(QMainWindow):
     def __open_project_management_screen(self):
         d = ProjectManagementScreen()
         d.exec()
+        print(d.nextStructurePath)
+
+        if d.nextStructurePath != "":
+            with open(CONSTANTS_LAST_EDIT_PROJECT, "w") as f:
+                f.write(d.nextStructurePath)
+            self.folder = load_structure_file(d.nextStructurePath)
+            self.folderList.clear()
+            self.folderList.append(self.folder)
+            self.fileManagementWidget.repaintByParent()
 
     def __handle_navigate(self, info: Folder):
         # print(info)
         s = SubFolderScreen(info)
         s.show()
+
+    def __create_new_project(self):
+        text, ok = QInputDialog.getText(self, "输入项目名称", "输入")
+        if ok and text is not None and text != "":
+            create_new_project(text)

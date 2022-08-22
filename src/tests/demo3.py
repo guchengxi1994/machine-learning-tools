@@ -3,7 +3,9 @@ from PySide6.QtWidgets import *
 
 
 class MainWindow(QMainWindow):
-    def __init__(self,):
+    def __init__(
+        self,
+    ):
         super().__init__()
         self.number = 0
 

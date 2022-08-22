@@ -1,4 +1,4 @@
-structure: _private/structure.json
+structure: _private/LASTEDITPROJECT
 db: _private/db.db
 icons:
   add_file: assets/add_file.png

@@ -4,6 +4,7 @@ import yaml
 CONSTANTS_FILE_PATH = "_private/constants.yaml"
 CONSTANTS_DB_PATH = "_private/db.db"
 CONSTANTS_DB_NAME = "db.db"
+CONSTANTS_LAST_EDIT_PROJECT = "_private/LASTEDITPROJECT"
 STRUCTURE_FILE_PATH = ""
 APP_ICON = ""
 BACK_ICON = ""
@@ -26,7 +27,11 @@ if not os.path.exists(CONSTANTS_FILE_PATH):
 else:
     with open(CONSTANTS_FILE_PATH, "r", encoding="utf-8") as f:
         yamlData = yaml.load(f.read(), Loader=yaml.FullLoader)
-        STRUCTURE_FILE_PATH = yamlData["structure"]
+        _lastEditPath = yamlData["structure"]
+        with open(_lastEditPath, "r") as l:
+            r = l.readlines()[0]
+        STRUCTURE_FILE_PATH = r
+
         APP_ICON = yamlData["icons"]["app_icon"]
         BACK_ICON = yamlData["icons"]["back"]
         SAVE_ICON = yamlData["icons"]["save"]

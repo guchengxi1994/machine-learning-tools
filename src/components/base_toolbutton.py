@@ -16,7 +16,7 @@ class BaseToolButton(QToolButton):
     ## 新窗口打开子文件夹
     navigateSingal = QtCore.Signal(Folder)
 
-    def __init__(self, T: FileOrFolder, parent) -> None:
+    def __init__(self, T: FileOrFolder, parent, canNavigate: bool = True) -> None:
         super().__init__(parent)
         if type(T) is File:
             self.setText(T.fileName)
@@ -33,6 +33,7 @@ class BaseToolButton(QToolButton):
         self.setStyleSheet("border : none")
         self.iniDragCor = [0, 0]
         self.T = T
+        self.canNavigate = canNavigate
 
     def mousePressEvent(self, e) -> None:
         # print("start", self.pos())
@@ -66,9 +67,11 @@ class BaseToolButton(QToolButton):
         groupBoxMenu.addAction(deleteAction)
 
         if type(self.T) is Folder:
-            openInANewWindow = QAction(QIcon(NAVIGATE_ICON), "新窗口中打开", self)
-            openInANewWindow.triggered.connect(self.__navigate)
-            groupBoxMenu.addAction(openInANewWindow)
+            if self.canNavigate:
+                openInANewWindow = QAction(QIcon(NAVIGATE_ICON), "新窗口中打开", self)
+                openInANewWindow.triggered.connect(self.__navigate)
+                # print(type(self.parent))
+                groupBoxMenu.addAction(openInANewWindow)
 
         groupBoxMenu.popup(QCursor.pos())
         if type(self.T) is Folder:

@@ -29,7 +29,7 @@ class FileManagementWidget(QWidget):
     ## 新窗口打开子文件夹
     navigateSingal = QtCore.Signal(Folder)
 
-    def __init__(self, parent: QMainWindow) -> None:
+    def __init__(self, parent: QMainWindow, canNavigate: bool) -> None:
         super(FileManagementWidget, self).__init__()
         self.parent = parent
 
@@ -48,6 +48,7 @@ class FileManagementWidget(QWidget):
         # self.setLayout(self.__layout)
         self.mainLayout.addWidget(self.scrollArea)
         self.folder: Folder = self.parent.folder
+        self.canNavigate = canNavigate
         self.__render()
         ## 可以文件拖拽进主窗体
         self.setAcceptDrops(True)
@@ -62,7 +63,7 @@ class FileManagementWidget(QWidget):
         self.elements: List[BaseToolButton] = []
         for i in self.parent.folderList[-1].children:
             if type(i) is Folder:
-                f = FolderElementWidget(i, self)
+                f = FolderElementWidget(i, self, self.canNavigate)
                 f.doubleClickSignal.connect(self.__double_click)
                 f.navigateSingal.connect(self.__handle_navigate)
             else:

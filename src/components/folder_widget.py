@@ -3,10 +3,11 @@ from PySide6 import QtCore
 
 
 class FolderElementWidget(BaseToolButton):
-    def __init__(self, T: FileOrFolder, parent) -> None:
+    def __init__(self, T: FileOrFolder, parent, canNavigate: bool) -> None:
         super().__init__(T, parent)
         self.folder = T
         self.setToolTip("{} 包含{}个文件。".format(T.folderName, len(T.children)))
+        self.canNavigate = canNavigate
 
     def mousePressEvent(self, e) -> None:
         super().mousePressEvent(e)
